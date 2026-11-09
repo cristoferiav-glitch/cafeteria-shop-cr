@@ -1,0 +1,16 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+# Evidências e arquivos locais
+evidencias_pit2/
+*.bak
+*.log
+
+# Banco de dados: não enviar exportações sem revisão
+*.sql

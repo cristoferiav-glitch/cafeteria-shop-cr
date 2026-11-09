@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Confirmado - Cafeteria Shop CR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="pagina-sucesso">
+
+    <header class="sucesso-header">
+        <h1>☕ Cafeteria Shop CR</h1>
+        <a href="{{ url_for('inicio') }}">Início</a>
+    </header>
+
+    <main class="sucesso-container">
+
+        <section class="sucesso-card">
+
+            <div class="sucesso-icone">✓</div>
+
+            <h2>Pedido realizado com sucesso!</h2>
+
+            <p class="sucesso-descricao">
+                Obrigado por escolher a Cafeteria Shop CR!
+                Seu pedido foi registrado em nosso sistema.
+            </p>
+
+            <div class="sucesso-detalhes">
+                <span>NÚMERO DO PEDIDO</span>
+                <strong>#{{ id_pedido }}</strong>
+
+                <div class="sucesso-status">
+                    ⏳ Aguardando pagamento
+                </div>
+            </div>
+
+            <p class="sucesso-aviso">
+                Este é um ambiente acadêmico.
+                Nenhuma cobrança real será realizada.
+            </p>
+
+            <a href="{{ url_for('inicio') }}" class="sucesso-botao">
+                ☕ Voltar para a cafeteria
+            </a>
+
+            <a href="{{ url_for('login_cliente') }}" class="sucesso-link">
+                Acompanhar meus pedidos →
+            </a>
+
+        </section>
+
+    </main>
+
+    <footer class="sucesso-rodape">
+        © 2026 Cafeteria Shop CR
+    </footer>
+
+</body>
+</html>

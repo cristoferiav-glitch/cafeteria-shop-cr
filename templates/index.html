@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Cafeteria Shop CR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>☕ Cafeteria Shop CR</h1>
+        <nav>
+    <a href="/">Início</a>
+    <a href="#produtos">Cardápio</a>
+    <a href="#sobre">Sobre nós</a>
+    
+<a href="{{ url_for('ver_carrinho') }}">
+    🛒 Meu Carrinho ({{ quantidade_carrinho }})
+</a>
+{% if session.get('cliente_id') %}
+    <a href="{{ url_for('area_cliente') }}">
+        Olá, {{ session.get('cliente_nome') }} 👋
+    </a>
+{% else %}
+    <a href="{{ url_for('login_cliente') }}">
+        Entrar
+    </a>
+{% endif %}
+</nav>
+    </header>
+
+    <main>
+        <section class="banner">
+            <h2>Ô, chega mais! O café já tá passando! ☕</h2>
+<p>Bateu aquela vontade de um cafezinho? Então chegou no lugar certo! Tem café fresquinho, umas gostosuras pra acompanhar e sempre cabe mais um por aqui. </p>
+            <a href="#produtos" class="botao">Ver produtos</a>
+        </section>
+
+        <section id="produtos">
+            <h2>As Gostosuras da Casa</h2>
+
+           
+<div class="produtos">
+    {% for produto in produtos %}
+    <article class="produto">
+
+        {% if produto.nome == 'Café Espresso' %}
+            {% set foto = 'cafe-espresso.jfif' %}
+            {% set icone = '☕' %}
+        {% elif produto.nome == 'Bolo de Chocolate' %}
+            {% set foto = 'bolo-de-chocolate.jpg' %}
+            {% set icone = '🍰' %}
+        {% elif produto.nome == 'Croissant' %}
+            {% set foto = 'croassaint.jpg' %}
+            {% set icone = '🥐' %}
+        {% elif produto.nome == 'Pão de Queijo' %}
+            {% set foto = 'Pão-de-queijo.webp' %}
+            {% set icone = '🧀' %}
+        {% elif produto.nome == 'Bolo de Morango' %}
+            {% set foto = 'bolo-de-morango.jfif' %}
+            {% set icone = '🍓' %}
+        {% elif produto.nome == 'Bombom de Uva' %}
+            {% set foto = 'bombom-de-uva.jpg' %}
+            {% set icone = '🍬' %}
+        {% else %}
+            {% set foto = none %}
+            {% set icone = '☕' %}
+        {% endif %}
+
+        {% if foto %}
+        <img src="{{ url_for('static', filename='imagens/' ~ foto) }}"
+             alt="{{ produto.nome }}"
+             class="foto-produto">
+        {% endif %}
+
+        <h3>{{ icone }} {{ produto.nome }}</h3>
+        <p>{{ produto.descricao }}</p>
+        <strong>R$ {{ "%.2f"|format(produto.preco)|replace(".", ",") }}</strong>
+<<form action="{{ url_for('adicionar_carrinho', id_produto=produto.id_produto) }}" method="POST">
+    <button type="submit" class="botao-carrinho">
+        🛒 Adicionar ao carrinho
+    </button>
+</form>
+    </article>
+    {% endfor %}
+</div>
+
+        </section>
+
+        <section id="sobre">
+            <h2>Um pouquinho sobre a gente</h2>
+            <p>
+                A Cafeteria Shop CR oferece cafés especiais,
+                doces e salgados para tornar seu dia melhor.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 Cafeteria Shop CR</p>
+    </footer>
+
+</body>
+</html>

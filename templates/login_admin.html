@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrativo - Cafeteria Shop CR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="pagina-login">
+
+    <main class="login-container">
+        <section class="login-card">
+
+            <div class="login-marca">
+                <div class="login-icone">🔐</div>
+                <h1>Cafeteria Shop CR</h1>
+                <p>Área Administrativa</p>
+            </div>
+
+            <div class="login-conteudo">
+                <h2>Acesso Administrativo</h2>
+                <p>Entre com suas credenciais para gerenciar a cafeteria.</p>
+
+                {% if erro %}
+                    <div class="login-erro">
+                        {{ erro }}
+                    </div>
+                {% endif %}
+
+                <form method="POST"
+                      action="{{ url_for('login_admin') }}"
+                      class="login-form">
+
+                    <div class="login-campo">
+                        <label for="email">E-mail</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Digite seu e-mail"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
+                    <div class="login-campo">
+                        <label for="senha">Senha</label>
+                        <input
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            placeholder="Digite sua senha"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="login-botao">
+                        Entrar no painel
+                    </button>
+
+                </form>
+
+                <a href="{{ url_for('inicio') }}" class="login-voltar">
+                    ← Voltar para a cafeteria
+                </a>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="login-rodape">
+        © 2026 Cafeteria Shop CR · Área Administrativa
+    </footer>
+
+</body>
+</html>

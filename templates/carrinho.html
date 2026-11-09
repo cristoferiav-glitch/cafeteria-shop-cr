@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho - Cafeteria Shop CR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="pagina-carrinho">
+
+    <header class="carrinho-header">
+        <h1>☕ Cafeteria Shop CR</h1>
+
+        <nav>
+            <a href="{{ url_for('inicio') }}">Início</a>
+            <a href="{{ url_for('inicio') }}#produtos">Cardápio</a>
+            <a href="{{ url_for('ver_carrinho') }}">
+                🛒 Meu Carrinho ({{ quantidade_carrinho }})
+            </a>
+
+            {% if session.get('cliente_id') %}
+                <a href="{{ url_for('area_cliente') }}">
+                    Olá, {{ session.get('cliente_nome') }} 👋
+                </a>
+            {% else %}
+                <a href="{{ url_for('login_cliente') }}">Entrar</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="carrinho-container">
+
+        <section class="carrinho-apresentacao">
+            <p class="carrinho-etiqueta">SEU PEDIDO</p>
+            <h2>🛒 Meu Carrinho</h2>
+            <p>Já escolheu suas gostosuras? Confira tudo antes de finalizar!</p>
+        </section>
+
+        {% if produtos %}
+
+            <div class="carrinho-layout">
+
+                <section class="carrinho-lista">
+                    <h2>☕ Produtos selecionados</h2>
+
+                    {% for produto in produtos %}
+                    <article class="carrinho-produto">
+
+                        <div class="carrinho-produto-info">
+                            <h3>{{ produto.nome }}</h3>
+
+                            <p>
+                                Preço unitário:
+                                <strong>
+                                    R$ {{ "%.2f"|format(produto.preco)|replace(".", ",") }}
+                                </strong>
+                            </p>
+
+                            <p class="carrinho-subtotal">
+                                Subtotal:
+                                <strong>
+                                    R$ {{ "%.2f"|format(produto.subtotal)|replace(".", ",") }}
+                                </strong>
+                            </p>
+                        </div>
+
+                        <div class="carrinho-produto-acoes">
+
+                            <div class="carrinho-quantidade">
+                                <span>Quantidade</span>
+
+                                <div class="carrinho-controles">
+                                    <form method="POST"
+                                          action="{{ url_for('alterar_quantidade', id_produto=produto.id_produto, acao='diminuir') }}">
+                                        <button type="submit" aria-label="Diminuir quantidade">−</button>
+                                    </form>
+
+                                    <strong>{{ produto.quantidade }}</strong>
+
+                                    <form method="POST"
+                                          action="{{ url_for('alterar_quantidade', id_produto=produto.id_produto, acao='aumentar') }}">
+                                        <button type="submit" aria-label="Aumentar quantidade">+</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <form method="POST"
+                                  action="{{ url_for('remover_carrinho', id_produto=produto.id_produto) }}">
+                                <button type="submit" class="carrinho-remover">
+                                    🗑️ Remover
+                                </button>
+                            </form>
+
+                        </div>
+                    </article>
+                    {% endfor %}
+                </section>
+
+                <aside class="carrinho-resumo">
+                    <h2>Resumo do pedido</h2>
+                    <p>Confira o valor total da sua compra.</p>
+
+                    <div class="carrinho-resumo-linha">
+                        <span>Produtos</span>
+                        <strong>{{ quantidade_carrinho }} unidade(s)</strong>
+                    </div>
+
+                    <div class="carrinho-resumo-total">
+                        <span>Total</span>
+                        <strong>
+                            R$ {{ "%.2f"|format(total)|replace(".", ",") }}
+                        </strong>
+                    </div>
+
+                    <a href="{{ url_for('finalizar_pedido') }}"
+                       class="carrinho-finalizar">
+                        Finalizar pedido →
+                    </a>
+
+                    <a href="{{ url_for('inicio') }}#produtos"
+                       class="carrinho-continuar">
+                        ← Continuar comprando
+                    </a>
+                </aside>
+
+            </div>
+
+        {% else %}
+
+            <section class="carrinho-vazio-card">
+                <div class="carrinho-vazio-icone">🛒</div>
+                <h2>Seu carrinho está vazio!</h2>
+                <p>
+                    Que tal escolher um café fresquinho ou uma
+                    das gostosuras do nosso cardápio?
+                </p>
+
+                <a href="{{ url_for('inicio') }}#produtos"
+                   class="carrinho-finalizar">
+                    ☕ Explorar o cardápio
+                </a>
+            </section>
+
+        {% endif %}
+
+    </main>
+
+    <footer class="carrinho-rodape">
+        © 2026 Cafeteria Shop CR · Feito com ☕
+    </footer>
+
+</body>
+</html>

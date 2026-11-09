@@ -1,0 +1,178 @@
+<
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Cafeteria Shop CR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="pagina-admin">
+
+    <header class="admin-header">
+        <h1>☕ Cafeteria Shop CR</h1>
+        <span>⚙️ Painel Administrativo</span>
+
+        <form method="POST" action="{{ url_for('logout_admin') }}">
+            <button type="submit" class="admin-sair">
+                Sair da administração
+            </button>
+        </form>
+    </header>
+
+    <main class="admin-container">
+
+        <section class="admin-apresentacao">
+            <p class="admin-subtitulo">ÁREA ADMINISTRATIVA</p>
+            <h2>Gerenciamento de Pedidos</h2>
+            <p>Controle os pagamentos e acompanhe o andamento dos pedidos da cafeteria.</p>
+        </section>
+
+        <section class="admin-resumo">
+
+            <div class="admin-card">
+                <span>📦 Total de pedidos</span>
+                <strong>{{ pedidos|length }}</strong>
+            </div>
+
+            <div class="admin-card">
+                <span>💳 Pagamentos aprovados</span>
+                <strong>
+                    {{ pedidos|selectattr('status_pagamento', 'equalto', 'aprovado')|list|length }}
+                </strong>
+            </div>
+
+            <div class="admin-card">
+                <span>☕ Pedidos entregues</span>
+                <strong>
+                    {{ pedidos|selectattr('status', 'equalto', 'entregue')|list|length }}
+                </strong>
+            </div>
+
+        </section>
+
+        <section class="admin-pedidos">
+
+            <div class="admin-pedidos-titulo">
+                <h2>📋 Lista de pedidos</h2>
+                <p>Visualize os pedidos e atualize seus status.</p>
+            </div>
+
+            <div class="admin-tabela-container">
+                <table class="admin-tabela">
+                    <thead>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Cliente</th>
+                            <th>Valor</th>
+                            <th>Status do pedido</th>
+                            <th>Pagamento</th>
+                            <th>Ações</th>
+                            <th>Atualizar pedido</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for pedido in pedidos %}
+                        <tr>
+                            <td>
+                                <strong>#{{ pedido.id_pedido }}</strong>
+                            </td>
+
+                            <td>{{ pedido.nome_cliente }}</td>
+
+                            <td>
+                                <strong>R$ {{ "%.2f"|format(pedido.valor_total) }}</strong>
+                            </td>
+
+                            <td>
+                                <span class="admin-status
+                                    {% if pedido.status == 'entregue' %}admin-sucesso
+                                    {% elif pedido.status == 'confirmado' %}admin-info
+                                    {% elif pedido.status == 'em_preparo' %}admin-alerta
+                                    {% elif pedido.status == 'pronto' %}admin-info
+                                    {% else %}admin-neutro{% endif %}">
+                                    {{ pedido.status|replace('_', ' ')|capitalize }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="admin-status
+                                    {% if pedido.status_pagamento == 'aprovado' %}admin-sucesso
+                                    {% elif pedido.status_pagamento == 'pendente' %}admin-alerta
+                                    {% else %}admin-neutro{% endif %}">
+                                    {{ pedido.status_pagamento or 'Não registrado' }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {% if pedido.status_pagamento == 'pendente' %}
+                                    <form method="POST"
+                                          action="{{ url_for('aprovar_pagamento', id_pedido=pedido.id_pedido) }}">
+                                        <button type="submit" class="admin-botao">
+                                            Aprovar pagamento
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="admin-sem-acao">—</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if pedido.status_pagamento == 'aprovado'
+                                      and pedido.status in ['confirmado', 'em_preparo', 'pronto'] %}
+
+                                    <form method="POST"
+                                          action="{{ url_for('atualizar_status_pedido', id_pedido=pedido.id_pedido) }}"
+                                          class="admin-form-status">
+
+                                        <select name="novo_status" required>
+                                            {% if pedido.status == 'confirmado' %}
+                                                <option value="em_preparo">Em preparo</option>
+                                            {% elif pedido.status == 'em_preparo' %}
+                                                <option value="pronto">Pronto</option>
+                                            {% elif pedido.status == 'pronto' %}
+                                                <option value="entregue">Entregue</option>
+                                            {% endif %}
+                                        </select>
+
+                                        <button type="submit" class="admin-botao admin-botao-status">
+                                            ✓ Atualizar status
+                                        </button>
+                                    </form>
+
+                                {% elif pedido.status == 'entregue' %}
+                                    <span class="admin-entregue">✓ Entregue</span>
+                                {% else %}
+                                    <span class="admin-aguardando">
+                                        Aguardando pagamento
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="admin-vazio">
+                                Nenhum pedido encontrado.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <a href="{{ url_for('inicio') }}" class="admin-voltar">
+            ← Voltar para a cafeteria
+        </a>
+
+    </main>
+
+    <footer class="admin-rodape">
+        © 2026 Cafeteria Shop CR · Painel Administrativo
+    </footer>
+
+</body>
+</html>

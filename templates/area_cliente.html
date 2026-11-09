@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta - Cafeteria Shop CR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="pagina-cliente">
+
+    <header class="cliente-header">
+        <h1>☕ Cafeteria Shop CR</h1>
+        <span>Minha Conta</span>
+    </header>
+
+    <main class="cliente-container">
+
+        <section class="cliente-boas-vindas">
+            <div>
+                <p class="cliente-subtitulo">ÁREA DO CLIENTE</p>
+                <h2>Olá, {{ nome }}! 👋</h2>
+                <p>Que bom ter você por aqui. Acompanhe seus pedidos!</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('logout_cliente') }}">
+                <button type="submit" class="cliente-sair">
+                    Sair da conta
+                </button>
+            </form>
+        </section>
+
+        <section class="cliente-pedidos">
+            <div class="cliente-pedidos-titulo">
+                <h2>📦 Meus Pedidos</h2>
+                <p>Confira o histórico das suas compras.</p>
+            </div>
+
+            <div class="cliente-tabela-container">
+                <table class="cliente-tabela">
+                    <thead>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Status do Pedido</th>
+                            <th>Pagamento</th>
+                            <th>Forma de Pagamento</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for pedido in pedidos %}
+                        <tr>
+                            <td><strong>#{{ pedido.id_pedido }}</strong></td>
+
+                            <td>
+                                {{ pedido.data_pedido.strftime('%d/%m/%Y %H:%M') }}
+                            </td>
+
+                            <td>
+                                <strong>R$ {{ "%.2f"|format(pedido.valor_total) }}</strong>
+                            </td>
+
+                            <td>
+                                <span class="cliente-status
+                                    {% if pedido.status == 'entregue' %}status-sucesso
+                                    {% elif pedido.status == 'confirmado' %}status-info
+                                    {% elif pedido.status == 'em_preparo' %}status-alerta
+                                    {% elif pedido.status == 'pronto' %}status-info
+                                    {% else %}status-neutro{% endif %}">
+                                    {{ pedido.status|replace('_', ' ')|capitalize }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="cliente-status
+                                    {% if pedido.status_pagamento == 'aprovado' %}status-sucesso
+                                    {% else %}status-alerta{% endif %}">
+                                    {{ pedido.status_pagamento or 'Não registrado' }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ pedido.forma_pagamento or '-' }}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="cliente-vazio">
+                                Você ainda não possui pedidos. ☕
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <a href="{{ url_for('inicio') }}" class="cliente-voltar">
+            ← Voltar para a cafeteria
+        </a>
+
+    </main>
+
+    <footer class="cliente-rodape">
+        © 2026 Cafeteria Shop CR · Feito com ☕
+    </footer>
+
+</body>
+</html>
