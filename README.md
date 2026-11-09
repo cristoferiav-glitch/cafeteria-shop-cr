@@ -1,5 +1,9 @@
 # ☕ Cafeteria Shop CR
+## 🌐 Acesse o sistema
 
+**Aplicação online:** [Cafeteria Shop CR](https://cafeteria-shop-cr.onrender.com/)
+
+O sistema está hospedado na plataforma Render e pode ser acessado diretamente pelo navegador.
 ## Sobre o projeto
 
 A Cafeteria Shop CR é uma aplicação web de e-commerce desenvolvida como parte do Projeto Integrador Transdisciplinar II (PIT II), do curso de Sistemas de Informação.
